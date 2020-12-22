@@ -4,8 +4,17 @@ const gamePattern = [];
 const userPattern = [];
 
 let randomChosenColor;
+let level;
+let started = false;
 
+$(document).keydown(function(event) {
+  if(started === false) {
+    started = true;
+    $("h1").text("Level 1");
+  } else {
 
+  }
+})
 
 // User click effects and pattern creation
 $(".btn").on("click", function() {
@@ -16,10 +25,9 @@ $(".btn").on("click", function() {
   playSound(btnId);
   // Push the selection into userPatter array for later comparison
   userPattern.push(btnId);
-
 });
 
-// Create a function to set a pattern
+// Create a function to set a pattern and loop through it
 function nextSequence() {
   // generate a random number between 0-3
   let randomNumber = Math.floor(Math.random() * 4);
@@ -27,6 +35,23 @@ function nextSequence() {
   randomChosenColor = btnColors[randomNumber];
   // Push the random color into the empty gamePattern array
   gamePattern.push(randomChosenColor);
+
+  for(i = 0; i < gamePattern.length; i++) {
+    let color = gamePattern[i];
+    arrayLoop(color, i);
+  }
+
+  console.log(gamePattern);
+
+}
+
+// function to loop through the gamePattern array playing animation and sounds
+// with a delay so the player can see and hear the pattern
+function arrayLoop(color, i) {
+  setTimeout(function() {
+    btnAnimation(color);
+    playSound(color);
+  }, 500 * i);
 }
 
 // create a function that will animate the appropriate button
