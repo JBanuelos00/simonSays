@@ -3,16 +3,16 @@ const btnColors = ["red", "blue", "green", "yellow"];
 const gamePattern = [];
 const userPattern = [];
 
+let started = false;
 let randomChosenColor;
 let level;
-let started = false;
 
 $(document).keydown(function(event) {
   if(started === false) {
     started = true;
-    $("h1").text("Level 1");
-  } else {
-
+    setTimeout(function() {
+      nextSequence();
+    }, 1000);
   }
 })
 
@@ -31,6 +31,10 @@ $(".btn").on("click", function() {
 function nextSequence() {
   // generate a random number between 0-3
   let randomNumber = Math.floor(Math.random() * 4);
+
+  level = 1;
+
+  $("#level-title").text("Level " + level);
   // Now set a random color from the colors array using the random numbers
   randomChosenColor = btnColors[randomNumber];
   // Push the random color into the empty gamePattern array
@@ -41,8 +45,19 @@ function nextSequence() {
     arrayLoop(color, i);
   }
 
-  console.log(gamePattern);
+  level++
+  console.log(level);
 
+  // console.log(gamePattern);
+
+}
+
+// function to check the answer of the user against the generated gamePattern
+function checkAnswer() {
+  // take user input array and compare vs gamePattern
+  //give WRONG if a input is provided that doesn't match
+
+  // call nextSequence() after 1000ms, empty user array.
 }
 
 // function to loop through the gamePattern array playing animation and sounds
@@ -63,7 +78,7 @@ function btnAnimation(name) {
   // set the timeout to 50ms to remove the class finishing the animation
   setTimeout(function() {
     $("#" + timeoutId ).removeClass("pressed")
-  }, 50);
+  }, 100);
 }
 
 // create a function that will play the sound of the appropirate button
