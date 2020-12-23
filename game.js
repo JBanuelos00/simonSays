@@ -18,7 +18,7 @@ $(document).keydown(function(event) {
 // User click effects and pattern creation
 $(".btn").on("click", function() {
   // Created an on click event listener that will store this id in a variable
-  let btnColorId = this.id;
+  let btnColorId = $(this).attr("id");
   // Push the selection into userPatter array for later comparison
   userPattern.push(btnColorId);
   // Animate clicked button and play the correct sound effect
@@ -47,26 +47,25 @@ function nextSequence() {
 
 // function to check the answer of the user against the generated gamePattern
 function checkAnswer(currentLevel) {
-  if(userPattern[currentLevel] == gamePattern[currentLevel]) {
-    console.log("success");
-    setTimeout(function() {
-      nextSequence();
-    }, 1000 * gamePattern.length);
+  if(gamePattern[currentLevel] === userPattern[currentLevel]) {
+    if(userPattern.length === gamePattern.length) {
+      setTimeout(function() {
+        nextSequence();
+      }, 1000);
+    }
   } else {
-    console.log("wrong");
+    gameOver();
   }
 
 }
 
 // create a function that will animate the appropriate button
 function btnAnimation(name) {
-  // pass down the argument for the nested functions lower in scope
-  let timeoutId = name;
-  // take the argument and select the id of the button to add a class
+    // take the argument and select the id of the button to add a class
   $("#" + name).addClass("pressed")
   // set the timeout to 50ms to remove the class finishing the animation
   setTimeout(function() {
-    $("#" + timeoutId ).removeClass("pressed")
+    $("#" + name ).removeClass("pressed")
   }, 100);
 }
 
@@ -77,14 +76,23 @@ function playSound(name) {
   btnSound.play();
 }
 
-function reset() {
-  // Display Game over
-  $("#level-title").text("Game Over");
-  // After delay clear all arrays and reset the level-title
+function gameOver() {
+  // change h1 to say "Game Over, Press Any Key to Restart"
+  $("#level-title").text("Game Over, Press Any Key to Restart!");
+  // add class game-over to body
+  $("body").addClass("game-over");
+  // setTimeout to remove class after 200ms
   setTimeout(function () {
-    started = false;
-    gamePattern = [];
-    userPattern = [];
-    $("#level-title").text("Press A Key to Start");
-  }, 2000);
+    $("body").removeClass("game-over");
+  }, 200)
+  // play wrong sound
+  playSound("wrong");
+
+  startOver();
+}
+
+function startOver() {
+  level = 0;
+  started = false;
+  gamePattern = [];
 }
