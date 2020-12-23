@@ -41,8 +41,14 @@ function nextSequence() {
   let randomChosenColor = btnColors[randomNumber];
   // Push the random color into the empty gamePattern array
   gamePattern.push(randomChosenColor);
-  btnAnimation(randomChosenColor);
-  playSound(randomChosenColor);
+
+  for(let i = 0; i < gamePattern.length; i++) {
+    setTimeout(function () {
+      patternLoop(gamePattern[i]);
+    }, 500 * i)
+  }
+  // btnAnimation(randomChosenColor);
+  // playSound(randomChosenColor);
 }
 
 // function to check the answer of the user against the generated gamePattern
@@ -74,6 +80,11 @@ function playSound(name) {
   // Allow the sound to be set dependent on which btn was clicked
   let btnSound = new Audio("sounds/" + name +".mp3");
   btnSound.play();
+}
+
+function patternLoop(pattern) {
+  btnAnimation(pattern);
+  playSound(pattern);
 }
 
 function gameOver() {
