@@ -3,76 +3,59 @@ const btnColors = ["red", "blue", "green", "yellow"];
 
 let gamePattern = [];
 let userPattern = [];
+
 let started = false;
-let randomChosenColor;
-let level;
+let level = 0;
 
 $(document).keydown(function(event) {
-  if(started === false) {
+  if(!started) {
+    $("#level-title").text("Level " + level);
+    nextSequence();
     started = true;
-    setTimeout(function() {
-      nextSequence();
-    }, 1000);
   }
-})
+});
 
 // User click effects and pattern creation
 $(".btn").on("click", function() {
   // Created an on click event listener that will store this id in a variable
-  let btnId = this.id;
-  // Animate clicked button and play the correct sound effect
-  btnAnimation(btnId);
-  playSound(btnId);
+  let btnColorId = this.id;
   // Push the selection into userPatter array for later comparison
-  userPattern.push(btnId);
+  userPattern.push(btnColorId);
+  // Animate clicked button and play the correct sound effect
+  btnAnimation(btnColorId);
+  playSound(btnColorId);
+
+  checkAnswer(userPattern.length-1);
 });
 
 // Create a function to set a pattern and loop through it
 function nextSequence() {
+  // Clear userPattern for next sequence
+  userPattern = [];
+  // increase the level by 1
+  level++
+  $("#level-title").text("Level " + level);
   // generate a random number between 0-3
   let randomNumber = Math.floor(Math.random() * 4);
-
-  level = 0;
-
-  $("#level-title").text("Level " + level);
   // Now set a random color from the colors array using the random numbers
-  randomChosenColor = btnColors[randomNumber];
+  let randomChosenColor = btnColors[randomNumber];
   // Push the random color into the empty gamePattern array
   gamePattern.push(randomChosenColor);
-
-  for(let i = 0; i < gamePattern.length; i++) {
-    let color = gamePattern[i];
-    arrayLoop(color, i);
-  }
-
-  level++
+  btnAnimation(randomChosenColor);
+  playSound(randomChosenColor);
 }
 
 // function to check the answer of the user against the generated gamePattern
-function checkAnswer(gamePattern, userPattern) {
-  // take user input array and compare vs gamePattern
-  for(let i = 0; i < userPattern.length; i++ ) {
-    if(userPattern[i] !== gamePattern[i]) {
-      //give WRONG if a input is provided that doesn't match
-      console.log("WRONG!");
-      playSound("wrong");
-      return reset();
-    } else {
-       nextSequence();
-       return userPattern = [];
-    }
+function checkAnswer(currentLevel) {
+  if(userPattern[currentLevel] == gamePattern[currentLevel]) {
+    console.log("success");
+    setTimeout(function() {
+      nextSequence();
+    }, 1000 * gamePattern.length);
+  } else {
+    console.log("wrong");
   }
 
-  // call nextSequence() after 1000ms, empty user array.
-}
-
-// function to loop through the gamePattern array playing animation and sounds
-// with a delay so the player can see and hear the pattern
-function arrayLoop(color, i) {
-  setTimeout(function() {
-    btnAnimation(color);
-    playSound(color);
-  }, 500 * i);
 }
 
 // create a function that will animate the appropriate button
